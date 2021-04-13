@@ -269,8 +269,10 @@ class WWPR {
 	 * @since   1.0.0
 	 */
 	public function admin_enqueue_scripts( $hook = '' ) {
+		wp_register_script( 'paramotor-js', esc_url( $this->assets_url ) . 'js/admin.js', array( 'jquery' ), $this->_version, true);
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version, true );
 		wp_enqueue_script( $this->_token . '-admin' );
+		wp_enqueue_script(  'paramotor-js' );
 	} // End admin_enqueue_scripts ()
 
 	/**

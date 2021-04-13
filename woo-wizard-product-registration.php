@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Woo Wizard Product Registration
  * Version: 1.0.0
@@ -17,8 +18,8 @@
  * @since 1.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 
@@ -40,14 +41,103 @@ require_once 'includes/lib/WWPR-Woo-Wizard-Integration.php';
  * @since  1.0.0
  * @return object WWPR
  */
-function WWPR() {
-	$instance = WWPR::instance( __FILE__, '1.0.0' );
+function WWPR()
+{
+    $instance = WWPR::instance(__FILE__, '1.0.0');
 
-	if ( is_null( $instance->settings ) ) {
-		$instance->settings = WWPR_Settings::instance( $instance );
-	}
+    if (is_null($instance->settings)) {
+        $instance->settings = WWPR_Settings::instance($instance);
+    }
 
-	return $instance;
+    return $instance;
 }
 
 WWPR();
+
+
+
+
+function add_meta_boxes()
+{
+    add_meta_box(
+        'woocommerce-product-registration',
+        __('Warranty Registration Serial #'),
+        'order_my_custom',
+        'shop_order',
+        'normal',
+        'high'
+    );
+}
+
+add_action('add_meta_boxes', 'add_meta_boxes');
+
+function order_my_custom()
+{
+    global $post;
+    $order = wc_get_order($post->ID);
+
+    if (!get_post_meta($post->ID, 'registration_serial', true)) {
+        $serialExists = false;
+        $noteBar = 'There is no serial registered yet for this order.';
+    } else {
+        $serialExists = true;
+        $noteBar = 'Serial was registered for '. get_post_meta($order->get_id(), 'customer_first_name', true).' on: <span class="date-registered">'. get_post_meta($order->get_id(), 'registration_date', true). '</span> at:  <span class="time-registered">'. get_post_meta($order->get_id(), 'registration_time', true). '</span>';
+    }
+    echo '<input type="text" data-serialExists="'. $serialExists.'" name="doors" id="serial-input" value="' . get_post_meta($order->get_id(), 'registration_serial', true) . '"/>';
+    echo '<button type="submit" id="save-serial"/>Register Serial</button>';
+    echo '<p class="note-bar">'.$noteBar.'</p>';
+    echo '<hidden id="theDate" value="'.get_post_meta($order->get_id(), 'registration_date', true).'"></hidden>';
+    echo '<div class="edit-date">Edit Date</div>';
+    echo '<div style="display:none" class="edit-date-time"><input autocomplete="off" type="text" id="datepicker"></div>';
+    }
+
+
+function example_ajax_request()
+{
+    // The $_REQUEST contains all the data sent via ajax
+    if (isset($_REQUEST)) {
+        $serial = $_REQUEST['serial'];
+        $postID = $_REQUEST['postID'];
+
+        $order = wc_get_order($postID);
+        $oldserial = get_post_meta($postID, 'registration_serial', true);
+
+        update_post_meta($postID,'registration_time', $_REQUEST['time']);
+        update_post_meta($postID,'registration_date', $_REQUEST['date']);
+
+        if ($oldserial){
+            if ($serial != $oldserial){
+                update_post_meta($postID,'registration_serial', $serial);
+                $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to '. $serial .' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
+                $order->add_order_note( $note );
+            }
+        } else {
+            update_post_meta($postID,'registration_serial', $serial);
+            $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
+            $order->add_order_note( $note );
+        
+        }
+    }
+    // Always die in functions echoing ajax content
+    die();
+}
+
+
+function get_order_by_serial(){
+    $serial = $_REQUEST['serial'];
+    $args = array(
+        'meta_key' => 'registration_serial',
+        'meta_query' => array(
+            array(
+                'key' => 'registration_serial',
+                'value' => $serial,
+                'compare' => '=',
+            ),
+        ),
+     );
+     $query = new WP_Query($args);
+     echo $serial;
+}
+
+add_action('wp_ajax_example_ajax_request', 'example_ajax_request');
+add_action('wp_ajax_get_order_by_serial', 'get_order_by_serial');
