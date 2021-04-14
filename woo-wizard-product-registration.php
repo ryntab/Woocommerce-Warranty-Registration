@@ -71,6 +71,7 @@ function add_meta_boxes()
 
 add_action('add_meta_boxes', 'add_meta_boxes');
 
+
 function order_my_custom()
 {
     global $post;
@@ -81,15 +82,23 @@ function order_my_custom()
         $noteBar = 'There is no serial registered yet for this order.';
     } else {
         $serialExists = true;
-        $noteBar = 'Serial was registered for '. get_post_meta($order->get_id(), 'customer_first_name', true).' on: <span class="date-registered">'. get_post_meta($order->get_id(), 'registration_date', true). '</span> at:  <span class="time-registered">'. get_post_meta($order->get_id(), 'registration_time', true). '</span>';
+        $noteBar = 'Serial was registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' on: <span class="date-registered">' . get_post_meta($order->get_id(), 'registration_date', true) . '</span> at:  <span class="time-registered">' . get_post_meta($order->get_id(), 'registration_time', true) . '</span>';
     }
-    echo '<input type="text" data-serialExists="'. $serialExists.'" name="doors" id="serial-input" value="' . get_post_meta($order->get_id(), 'registration_serial', true) . '"/>';
+    echo '<input type="text" data-serialExists="' . $serialExists . '" name="doors" id="serial-input" value="' . get_post_meta($order->get_id(), 'registration_serial', true) . '"/>';
     echo '<button type="submit" id="save-serial"/>Register Serial</button>';
-    echo '<p class="note-bar">'.$noteBar.'</p>';
-    echo '<hidden id="theDate" value="'.get_post_meta($order->get_id(), 'registration_date', true).'"></hidden>';
+    echo '<p class="note-bar">' . $noteBar . '</p>';
+    echo '<hidden id="theDate" value="' . get_post_meta($order->get_id(), 'registration_date', true) . '"></hidden>';
     echo '<div class="edit-date">Edit Date</div>';
     echo '<div style="display:none" class="edit-date-time"><input autocomplete="off" type="text" id="datepicker"></div>';
-    }
+}
+
+
+add_action('wp_ajax_example_ajax_request', 'example_ajax_request');
+add_action('wp_ajax_orderSerialValidity', 'orderSerialValidity');
+
+
+
+
 
 
 function example_ajax_request()
@@ -102,20 +111,19 @@ function example_ajax_request()
         $order = wc_get_order($postID);
         $oldserial = get_post_meta($postID, 'registration_serial', true);
 
-        update_post_meta($postID,'registration_time', $_REQUEST['time']);
-        update_post_meta($postID,'registration_date', $_REQUEST['date']);
+        update_post_meta($postID, 'registration_time', $_REQUEST['time']);
+        update_post_meta($postID, 'registration_date', $_REQUEST['date']);
 
-        if ($oldserial){
-            if ($serial != $oldserial){
-                update_post_meta($postID,'registration_serial', $serial);
-                $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to '. $serial .' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
-                $order->add_order_note( $note );
+        if ($oldserial) {
+            if ($serial != $oldserial) {
+                update_post_meta($postID, 'registration_serial', $serial);
+                $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to ' . $serial . ' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
+                $order->add_order_note($note);
             }
         } else {
-            update_post_meta($postID,'registration_serial', $serial);
+            update_post_meta($postID, 'registration_serial', $serial);
             $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
-            $order->add_order_note( $note );
-        
+            $order->add_order_note($note);
         }
     }
     // Always die in functions echoing ajax content
@@ -123,21 +131,45 @@ function example_ajax_request()
 }
 
 
-function get_order_by_serial(){
-    $serial = $_REQUEST['serial'];
-    $args = array(
-        'meta_key' => 'registration_serial',
-        'meta_query' => array(
-            array(
-                'key' => 'registration_serial',
-                'value' => $serial,
-                'compare' => '=',
-            ),
-        ),
-     );
-     $query = new WP_Query($args);
-     echo $serial;
+function orderSerialValidity()
+{
+    if (isset($_REQUEST)) {
+        $serial = $_REQUEST['serial'];
+
+        $args = array(
+            'meta_key' => 'registration_serial',
+            'meta_value' => 'DXZ0065',
+            'post_status' => 'any',
+            'posts_per_page' => -1
+        );
+        $posts = new WP_Query($args);
+        
+        foreach($posts as $post){
+            $order = wc_get_order( $post->ID );
+            var_dump($order);
+        }
+    
+        // kick back results ##
+        die();
+    }
 }
 
-add_action('wp_ajax_example_ajax_request', 'example_ajax_request');
-add_action('wp_ajax_get_order_by_serial', 'get_order_by_serial');
+
+add_action('init', 'my_init');
+function my_init(){
+    $args = array(
+        'meta_key' => 'registration_serial',
+        'meta_value' => 'dawdwaddd',
+        'post_status' => 'any',
+        'posts_per_page' => -1
+    );
+    $posts = new WP_Query($args);
+    
+    foreach($posts as $post){
+        $order = wc_get_order( $post->ID );
+        var_dump($post->ID );
+    }
+
+}
+
+
