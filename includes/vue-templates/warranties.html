@@ -1,11 +1,55 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script src="https://unpkg.com/axios@0.2.1/dist/axios.min.js"></script>
+<script src="https://unpkg.com/qs@6.10.1/dist/qs.js"></script>
 <div class="wrapper" id="app">
   <div class="card-form">
     <div class="card-list">
-      <div class="card-item" v-bind:class="{ '-active' : isCardFlipped }">
-        <div class="card-item__side -front">
+      <div v-if="currentStatus != 'home'" class="warrantyNavBar">
+        <span v-on:click="setHome()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            display="block" id="ArrowLeft">
+            <path d="M11 5l-7 7 7 7" />
+            <path d="M4 12h16" />
+          </svg>
+          <p>Back</p>
+        </span>
+      </div>
+
+      <!-- Home -->
+      <div v-if="currentStatus == 'home'" class="card-item anim">
+        <div class="card-item mb-40">
+          <div class="card-form__warranties">
+            <div class="card_bottom_feilds">
+              <h5>Have a paramotor on the way?</h5>
+              <button v-on:click="startRegistering()" type="submit" class="single_add_to_cart_button bundle_add_to_cart_button
+                    button alt disabled mkdf-visible">
+                <span class="mkdf-btn-text">Register New Paramotor</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div v-if="this.registeredWarranties" class="card-item mb-40">
+          <div class="card-form__warranties">
+            <div class="card_bottom_feilds">
+              <h5>Registered Warranties</h5>
+              <div v-for="item in
+                    this.registeredWarranties.registered_warranties" class="registeredItems">
+                <div class="orderItem">
+                  <p>Order: </p>
+                  <span class="orderItemNum">#{{item.order_id}}</span>
+                  <span v-on:click="viewOrder(item.order_id)" class="viewItem underline">View Order Items</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registering -->
+      <div class="card-item anim">
+        <div v-if="showCard" class="card-item__side -front">
           <div class="card-item__focus" v-bind:class="{'-active' :
-            focusElementStyle }" v-bind:style="focusElementStyle" ref="focusElement"></div>
+                focusElementStyle }" v-bind:style="focusElementStyle" ref="focusElement"></div>
           <div class="card-item__cover">
             <img src="https://gravityparamotors.com/wp-content/uploads/videobackground.jpg" class="card-item__bg">
           </div>
@@ -14,15 +58,18 @@
               <template v-if="getCardType === 'amex'">
                 <span v-for="(n, $index) in amexCardMask" :key="$index">
                   <transition name="slide-fade-up">
-                    <div class="card-item__numberItem" v-if="$index> 4 && $index
-                      <14 && serialNumber.length> $index
-                        && n.trim() !== ''"></div>
-                    <div class="card-item__numberItem" :class="{ '-active' :
-                        n.trim() === '' }" :key="$index" v-else-if="serialNumber.length> $index">
+                    <div class="card-item__numberItem" v-if="$index> 4 &&
+                          $index
+                          <14 && serialNumber.length> $index
+                            && n.trim() !== ''"></div>
+                    <div class="card-item__numberItem" :class="{ '-active'
+                            :
+                            n.trim() === '' }" :key="$index" v-else-if="serialNumber.length> $index">
                       {{serialNumber[$index]}}
                     </div>
-                    <div class="card-item__numberItem" :class="{ '-active' :
-                        n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
+                    <div class="card-item__numberItem" :class="{ '-active'
+                            :
+                            n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
                   </transition>
                 </span>
               </template>
@@ -30,14 +77,16 @@
                 <span v-for="(n, $index) in otherCardMask" :key="$index">
                   <transition name="slide-fade-up">
                     <div class="card-item__numberItem" v-if="$index> 10 &&
-                        serialNumber.length>
-                        $index && n.trim() !== ''"></div>
-                    <div class="card-item__numberItem" :class="{ '-active' :
-                        n.trim() === '' }" :key="$index" v-else-if="serialNumber.length> $index">
+                            serialNumber.length>
+                            $index && n.trim() !== ''"></div>
+                    <div class="card-item__numberItem" :class="{ '-active'
+                            :
+                            n.trim() === '' }" :key="$index" v-else-if="serialNumber.length> $index">
                       {{serialNumber[$index]}}
                     </div>
-                    <div class="card-item__numberItem" :class="{ '-active' :
-                        n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
+                    <div class="card-item__numberItem" :class="{ '-active'
+                            :
+                            n.trim() === '' }" v-else :key="$index + 1">{{n}}</div>
                   </transition>
                 </span>
               </template>
@@ -49,9 +98,9 @@
                   <div class="card-item__name" v-if="paramotorOwner.length" key="1">
                     <transition-group name="slide-fade-right">
                       <span class="card-item__nameItem" v-for="(n, $index)
-                          in paramotorOwner.replace(/\s\s+/g, ' ')" v-if="$index
-                          ===
-                          $index" v-bind:key="$index + 1">{{n}}</span>
+                              in paramotorOwner.replace(/\s\s+/g, ' ')" v-if="$index
+                              ===
+                              $index" v-bind:key="$index + 1">{{n}}</span>
                     </transition-group>
                   </div>
                   <div class="card-item__name" v-else key="2">Full Name</div>
@@ -60,30 +109,34 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="card-form__inner">
-      <div v-if="!busy" class="card_bottom_feilds">
-        <div class="card-input">
-          <label for="serialNumber" class="card-input__label">Paramotor Serial
-            Number</label>
-          <input type="text" id="serialNumber" class="card-input__input" v-mask="generateserialNumberMask"
-            v-model="serialNumber" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="serialNumber"
-            autocomplete="off">
+        <div v-if="currentStatus == 'registering'" class="card-form__inner
+                anim mb-40">
+          <div v-if="!this.busy" class="card_bottom_feilds">
+            <div class="card-input">
+              <label for="serialNumber" class="card-input__label">Paramotor
+                Serial
+                Number</label>
+              <input type="text" id="serialNumber" class="card-input__input" v-mask="generateserialNumberMask"
+                v-model="serialNumber" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="serialNumber"
+                autocomplete="off">
+            </div>
+            <div class="card-input">
+              <label for="paramotorOwner" class="card-input__label">Paramotor
+                Owner [
+                Full Name ]</label>
+              <input type="text" id="paramotorOwner" class="card-input__input" v-model="paramotorOwner"
+                v-on:focus="focusInput" v-on:blur="blurInput" data-ref="paramotorOwner" autocomplete="off">
+            </div>
+            <button :disabled='isDisabled' v-on:click="register()" class="card-form__button">
+              Register Paramotor
+            </button>
+          </div>
         </div>
-        <div class="card-input">
-          <label for="paramotorOwner" class="card-input__label">Paramotor
-            Owner [
-            Full Name ]</label>
-          <input type="text" id="paramotorOwner" class="card-input__input" v-model="paramotorOwner"
-            v-on:focus="focusInput" v-on:blur="blurInput" data-ref="paramotorOwner" autocomplete="off">
-        </div>
-        <button :disabled='isDisabled' v-on:click="register()" class="card-form__button">
-          Register Paramotor
-        </button>
       </div>
-      <div v-else>
-        <h4>Fetching order information for #{{this.serialNumber}}...</h4>
+
+      <div v-if="currentStatus == 'checking'" class="card-form__inner
+              anim">
+        <h4>Checking for an order with the serial #{{this.serialNumber}}</h4>
         <p>Almost done, the registration process is almost complete. We're
           grabbing your paramotor parts and warranty information!</p>
         <div class="upload do"><svg viewBox="0 0 60 60" class="image">
@@ -91,26 +144,122 @@
             <circle fill="#FFFFFF" cx="15" cy="15" r="5">
               <circle fill="#FFFFFF" cx="15" cy="15" r="5"></circle>
             </circle>
-            <path d="M 50 54 L 10 54 C 7.7909 54 6 52.2091 6 50 L 6 44.2868 L
-                6 29 L 54 29 L 54 50 C 54 52.2091 52.2091 54 50 54 Z" fill="#FFFFFF"></path>
+            <path d="M 50 54 L 10 54 C 7.7909 54 6 52.2091 6 50 L 6
+                    44.2868 L
+                    6 29 L 54 29 L 54 50 C 54 52.2091 52.2091 54 50 54 Z" fill="#FFFFFF"></path>
           </svg></div>
       </div>
+
+      <!-- Verified -->
+      <div v-if="currentStatus == 'verified'" class="card-form__inner
+              anim">
+        <h4>Your serial was verified and matched to order
+          #{{this.orderID}}</h4>
+        <p>We're grabbing your paramotor parts and warranty information!
+          Sit tight, this should only take a second</p>
+        <div class="upload do"><svg viewBox="0 0 60 60" class="image">
+            <rect fill="currentColor" x="0" y="0" width="60" height="60" rx="11.9999993"></rect>
+            <circle fill="#FFFFFF" cx="15" cy="15" r="5">
+              <circle fill="#FFFFFF" cx="15" cy="15" r="5"></circle>
+            </circle>
+            <path d="M 50 54 L 10 54 C 7.7909 54 6 52.2091 6 50 L 6
+                    44.2868 L
+                    6 29 L 54 29 L 54 50 C 54 52.2091 52.2091 54 50 54 Z" fill="#FFFFFF"></path>
+          </svg></div>
+      </div>
+
+      <!-- Failed -->
+      <div v-if="currentStatus == 'serialMatchFailed'" class="card-form__inner anim">
+        <h4>The serial entered did not match any existing orders 😔</h4>
+        <p>The serial you provided was not matched to any orders in our
+          database. Try entering the serial again or reach out to our
+          support team so that we may help you.</p>
+        <button v-on:click="setHome()" class="card-form__button">
+          Go Back
+        </button>
+      </div>
+
+      <!-- List Fetched Orders -->
+      <div v-if="currentStatus == 'list-orders'" class="card-form__inner
+              anim">
+        <div v-if="this.products">
+          <h4>Your parts have registered for warranty!</h4>
+          <div v-for="item in this.products">
+            <div class="displayOrderItem">
+              <div class="order__image" v-bind:style="{ backgroundImage:
+                      'url(' + item.item.image + ')' }"></div>
+              <div class="orderText">
+                <h5>{{item.item.product_name}}</h5>
+                <p>Quantity: #{{item.item.quantity}}</p>
+                <div v-if="item.item.warranty != null" class="warrentyLength">
+                  <span>Warranty Length: </span>
+                  <span v-if="item.item.warranty.length == 'lifetime'">{{item.item.warranty.length}}</span>
+                  <span v-else>{{item.item.warranty.value}}
+                    {{item.item.warranty.duration}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View Order Individual Order-->
+      <div v-if="currentStatus == 'viewOrder'" class="card-item anim">
+        <div class="card_form__orderView">
+          <div v-if="this.busy" class="card_bottom_feilds">
+            <h4>Loading Order #{{this.currentOrderID}}</h4> <!-- Do load skeleton here -->
+            <div class="skeleton" v-for="repeat in repeats">
+              <div class="skeleton__image"></div>
+              <div class="skeleton__text-container">
+                <div class="skeleton__title"></div>
+                <div class="skeleton__text"></div>
+              </div>
+            </div>
+          </div>
+          <div v-if="!this.busy">
+            <h4>Your Order #{{this.currentOrderID}}</h4>
+          </div>
+          <div v-for="item in this.products">
+            <div class="displayOrderItem">
+              <div class="order__image" v-bind:style="{ backgroundImage:
+                      'url(' + item.item.image + ')' }"></div>
+              <div class="orderText">
+                <h5>{{item.item.product_name}}</h5>
+                <p>Quantity: #{{item.item.quantity}}</p>
+                <div v-if="item.item.warranty != null" class="warrentyLength">
+                  <span>Warranty Length: </span>
+                  <span v-if="item.item.warranty.length == 'lifetime'">{{item.item.warranty.length}}</span>
+                  <span v-else>{{item.item.warranty.value}}
+                    {{item.item.warranty.duration}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </div>
+</div>
 <script>
-  var j = jQuery.noConflict();
   new Vue({
     el: "#app",
     data() {
       return {
+        repeats: 4,
+        showCard: false,
+        currentStatus: 'home',
+        currentOrderID: '',
         busy: false,
-        serialVerified: null,
+        registeredWarranties: null,
+        viewingOrder: false,
+        products: null,
+        serialVerified: false,
+        orderID: '#######',
         isDisabled: true,
-        serialIsValid: 'none',
-        currentCardBackground: Math.floor(Math.random() * 25 + 1), // just for fun :D
-        paramotorOwner: "",
-        serialNumber: "",
+        paramotorOwner: "Ryan Taber",
+        serialNumber: "DX79002",
         serialValid: false,
         nameValid: false,
         minCardYear: new Date().getFullYear(),
@@ -122,6 +271,7 @@
       };
     },
     mounted() {
+      this.registeredWarranties = JSON.parse(registeredWarranties);
       this.serialNumberTemp = this.otherCardMask;
       document.getElementById("serialNumber").focus();
     },
@@ -146,14 +296,19 @@
         this.paramotorOwner = value;
         this.validateName(this.paramotorOwner);
       },
-      serialVerified(value){ 
-        console.log('change');
-      }
+      serialVerified(value) {
+        this.serialVerified = value;
+        console.log(this.serialVerified);
+      },
+      orderID(value) {
+        this.orderID = value;
+        console.log(this.orderID)
+      },
+      registeredWarranties: function (val) {
+        console.log('data change')
+      },
     },
     methods: {
-      flipCard(status) {
-        this.isCardFlipped = status;
-      },
       focusInput(e) {
         this.isInputFocused = true;
         let targetRef = e.target.dataset.ref;
@@ -191,32 +346,90 @@
           this.isDisabled = true;
         }
       },
+      startRegistering() {
+        this.currentStatus = 'registering';
+        this.showCard = true;
+      },
       register() {
         var self = this;
-        let serial = this.serialNumber;
-        console.log(this.serialNumber);
         this.busy = true;
-        console.log('registering');
+        let serial = this.serialNumber;
+        this.currentStatus = 'checking';
 
-        j.ajax({
-              type:"POST",
-              url: "/wp-admin/admin-ajax.php",
-              data: {
-                  action:'orderSerialValidity',
-                  search_string:serial
-              },
-              success:function(response){
-                this.serialVerified = true;
-                console.log(this.serialVerified);
-              },
-              error: function(error){
-                console.log('There seems to be an error with this search.');
+        var data = {
+          action: 'orderSerialValidity',
+          serial: serial,
+        };
+
+        data = Qs.stringify(data);
+        axios.post(woocommerce_params.ajax_url + '?' + data)
+          .then(response => {
+            this.serialVerified = response.valid;
+            this.orderID = response.id;
+            if (response.valid == true) {
+              this.getOrderItems();
+              var newOrder = {
+                'order_id': this.orderID,
               }
-          });
+              console.log('run')
+              if (this.containsObject(newOrder, this.registeredWarranties.registered_warranties)){
+                console.log('true');
+                this.registeredWarranties.registered_warranties.push(newOrder);
+              } else {
+                console.log('dont add')
+              }
+             
+              this.busy = false;
+              this.currentStatus = 'verified';
+            } else if (response.valid == false) {
+              this.currentStatus = 'serialMatchFailed';
+              return;
+            }
+          })
+          .catch(error => console.log(error));
       },
-
-      getOrderItems(){
-
+      getOrderItems() {
+        userID = userID.toString();
+        var data = {
+          action: 'orderGetParts',
+          customerID: userID,
+          orderID: this.orderID,
+        };
+        data = Qs.stringify(data);
+        axios.post(woocommerce_params.ajax_url + '?' + data)
+          .then(response => {
+            this.currentStatus = 'list-orders';
+            this.products = response;
+            this.setOrderItems()
+          })
+          .catch(error => console.log(error));
+      },
+      setOrderItems() {
+        console.log(this.products)
+      },
+      viewOrder(orderID) {
+        this.products = null;
+        this.busy = true;
+        this.currentStatus = 'viewOrder';
+        this.currentOrderID = orderID;
+        userID = userID.toString();
+        var data = {
+          action: 'orderGetParts',
+          customerID: userID,
+          orderID: orderID,
+        };
+        data = Qs.stringify(data);
+        axios.post(woocommerce_params.ajax_url + '?' + data)
+          .then(response => {
+            this.busy = false;
+            this.products = response;
+          })
+          .catch(error => console.log(error));
+      },
+      setHome() {
+        this.currentStatus = 'home';
+        this.busy = false;
+        this.showCard = false;
       },
       blurInput() {
         let vm = this;
@@ -226,6 +439,15 @@
           }
         }, 300);
         vm.isInputFocused = false;
+      },
+      containsObject(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+          if (list[i] === obj) {
+            return true;
+          }
+        }
+        return false;
       }
     }
   });
