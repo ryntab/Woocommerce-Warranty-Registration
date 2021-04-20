@@ -193,7 +193,7 @@
                 <p>Quantity: #{{item.item.quantity}}</p>
                 <div v-if="item.item.warranty != null" class="warrentyLength">
                   <span>Warranty Length: </span>
-                  <span v-if="item.item.warranty.length == 'lifetime'">{{item.item.warranty.length}}</span>
+                  <span v-if="item.item.warranty.length == 'lifetime'" class="warrantyLength">{{item.item.warranty.length}}</span>
                   <span v-else>{{item.item.warranty.value}}
                     {{item.item.warranty.duration}}</span>
                 </div>
@@ -227,7 +227,7 @@
                 <h5>{{item.item.product_name}}</h5>
                 <p>Quantity: #{{item.item.quantity}}</p>
                 <div v-if="item.item.warranty != null" class="warrentyLength">
-                  <span>Warranty Length: </span>
+                  <span style="margin-right: 5px;">Warranty Length:</span>
                   <span v-if="item.item.warranty.length == 'lifetime'">{{item.item.warranty.length}}</span>
                   <span v-else>{{item.item.warranty.value}}
                     {{item.item.warranty.duration}}</span>
@@ -258,8 +258,8 @@
         serialVerified: false,
         orderID: '#######',
         isDisabled: true,
-        paramotorOwner: "Ryan Taber",
-        serialNumber: "DX79002",
+        paramotorOwner: "",
+        serialNumber: "",
         serialValid: false,
         nameValid: false,
         minCardYear: new Date().getFullYear(),
@@ -368,15 +368,14 @@
             this.orderID = response.id;
             if (response.valid == true) {
               this.getOrderItems();
+              
               var newOrder = {
                 'order_id': this.orderID,
               }
-              console.log('run')
+
               if (this.containsObject(newOrder, this.registeredWarranties.registered_warranties)){
-                console.log('true');
                 this.registeredWarranties.registered_warranties.push(newOrder);
               } else {
-                console.log('dont add')
               }
              
               this.busy = false;

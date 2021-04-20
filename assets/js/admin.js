@@ -4,7 +4,9 @@
  *  @package Woo Wizard Product Registration/JS
  */
  jQuery(function($) {
+	let searchRequest = null;
 	$( document ).ready(function() {
+		var searchRequest = null;
 		let theDate = $("#theDate").val()
 		$( "#datepicker" ).datepicker({ 
 			dateFormat: 'dd-mm-yy',
@@ -76,8 +78,35 @@
 				  error: function(errorThrown){
 					  console.log(errorThrown);
 				  }
-			  });  
-						
+			  });  		
 		})
+		$('#serial-input').on('keyup', function() {
+            if ($('#serial-input').val().length > 2) {
+                searchRequest = jQuery.ajax({
+                    url:  ajaxurl,
+                    type: 'post',
+                    data: {
+                        action: 'verify_serial',
+                        keyword: jQuery('#serial-input').val()
+                    },
+                    beforeSend: function() {
+						$('#save-serial').text('Checking Validity');
+						$("#save-serial").prop("disabled",true);
+                        if (searchRequest != null) {
+                            searchRequest.abort();
+                        }
+                    },
+                    success: function(data) {
+                       if (data == true){
+						   $('#save-serial').html('This Serial Exists Already!<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" display="block" id="CircleAlert"><circle cx="12" cy="12" r="10"/><path d="M12 7v6m0 3.5v.5"/></svg>');
+						   $("#save-serial").prop("disabled",true);
+					   } else if (data == false){
+							$('#save-serial').html('Update Serial<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" display="block" id="CircleCheck"><path d="M8 12.5l3 3 5-6"/><circle cx="12" cy="12" r="10"/></svg>');
+							$("#save-serial").prop("disabled",false);
+					   }
+                    }
+                });
+            }
+        });	
 	});
 });
