@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Plugin Name: Woo Wizard Product Registration
+ * Plugin Name: GP - Warranty Registration 🔥‍
  * Version: 1.0.0
  * Plugin URI: http://www.gravityparamotors.com
- * Description: An integration between Formidable Pro, Woocommerce and last but not least Woocommerce Product Wizard. Oh boy....
+ * Description: Product warranty registration.... fun. Make sure to re-save permalinks when activating for the first time.
  * Author: Ryan Taber
  * Author URI: http://www.gravityparamotors.com
  * Requires at least: 4.0
@@ -13,7 +13,7 @@
  * Text Domain: wordpress-plugin-template
  * Domain Path: /lang/
  *
- * @package WordPress / Woocommerce / Formidable / Woocommerce Product Wizard
+ * @package WordPress / Woocommerce / Formidable / Woocommerce Product Wizard 
  * @author Ryan Taber
  * @since 1.0.0
  */
@@ -87,8 +87,6 @@ function order_my_custom()
         $registrationSerial = $user_warranty[0]->order_serial;
     }
 
-    var_dump($registrationSerial);
-
     if (!$registrationSerial) {
         $serialExists = false;
         $noteBar = 'There is no serial registered yet for this order.';
@@ -123,12 +121,13 @@ function admin_set_serial_data()
 
         if ($oldserial) {
             if ($serial != $oldserial) {
-                $wpdb->update('wp_user_warranties', array('order_serial'=> $serial), array('order_id'=> $orderID) );
+                $wpdb->update('wp_user_warranties', array('order_serial' => $serial), array('order_id' => $orderID));
                 $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to ' . $serial . ' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
                 $order->add_order_note($note);
             }
         } else {
-            $wpdb->insert('wp_user_warranties', array('customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => gmdate('Y-m-d H:i:s'), 'claimed_at' => Null,
+            $wpdb->insert('wp_user_warranties', array(
+                'customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => gmdate('Y-m-d H:i:s'), 'claimed_at' => Null,
             ));
             $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
             $order->add_order_note($note);
@@ -153,14 +152,21 @@ function orderSerialValidity()
     if (isset($_REQUEST)) {
         global $wpdb;
         $serial = $_REQUEST['serial'];
-        $results = $wpdb->get_results("SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'registration_serial' AND meta_value='$serial'");
+        $results = $wpdb->get_results($wpdb->prepare("SELECT order_id, claimed_at FROM `wp_user_warranties` WHERE `order_serial` = '$serial'"));
 
-        if ($results[0]->post_id != 0) {
-            $data['valid'] = true;
-            $data['id'] = json_encode(intval($results[0]->post_id));
-        } else {
+        if ($results[0]->claimed_at != null) {
             $data['valid'] = false;
+            $data['reason'] = 'serialClaimed';
+        } else {
+            if ($results[0]->order_id != 0) {
+                $data['valid'] = true;
+                $data['id'] = json_encode(intval($results[0]->order_id));
+            } else {
+                $data['valid'] = false;
+                $data['reason'] = 'serialMatchFailed';
+            }
         }
+
         wp_send_json($data);
     }
 }
@@ -168,48 +174,34 @@ function orderSerialValidity()
 //Frontend: Get the products in an order by the order number
 function orderGetParts()
 {
-    $orderID = $_REQUEST['orderID'];
-    $orderSerial = strval($_REQUEST['orderSerial']);
-    $customerID = $_REQUEST['customerID'];
+    global $wpdb;
+    date_default_timezone_set('America/Chicago');
+
+    $orderID        = intVal($_REQUEST['orderID']);
+    $customerID     = intVal($_REQUEST['customerID']);
+    $orderSerial    = strval($_REQUEST['orderSerial']);
+
     $order = wc_get_order($orderID);
     $customersProducts = array();
 
-    //Claim Warranty
-    date_default_timezone_set('America/Chicago');
-
-    update_post_meta($orderID, 'warranty_claimed', true);
-    update_post_meta($orderID, 'claimed_date',  date('d-m-y'));
-    update_post_meta($orderID, 'claimed_time',  date("h:i:s"));
-
-
     foreach ($order->get_items() as $item_key => $item) :
-        $item_data    = $item->get_data();
-        $product_name = $item_data['name'];
-        $quantity     = $item_data['quantity'];
-        $product = $item->get_product(); // Get the WC_Product object
-        $image_url = wp_get_attachment_image_url($product->get_image_id(), 'small');
-
-        $warranty = get_post_meta($item_data['product_id'], '_warranty');
-
-        $data['item']['product_name'] =  $product_name;
-        $data['item']['quantity'] =   $quantity;
-        $data['item']['image'] = $image_url;
-        $data['item']['warranty'] = $warranty[0];
+        $item_data      = $item->get_data();
+        $product_name   = $item_data['name'];
+        $quantity       = $item_data['quantity'];
+        $product        = $item->get_product();
+        $image_url      = wp_get_attachment_image_url($product->get_image_id(), 'small');
+        $warranty       = get_post_meta($item_data['product_id'], '_warranty'); {
+            $data['item']['product_name'] =  $product_name;
+            $data['item']['quantity'] =   $quantity;
+            $data['item']['image'] = $image_url;
+            $data['item']['warranty'] = $warranty[0];
+        }
         array_push($customersProducts, $data);
     endforeach;
 
-
-    global $wpdb;
-    $wpdb->insert('wp_user_warranties', array(
-        'customer_id' => $customerID,
-        'order_id' => $orderID,
-        'order_serial' => $orderSerial,
-        'registered_at' => gmdate('Y-m-d H:i:s'),
-        'claimed_at' => gmdate('Y-m-d H:i:s'),
-    ));
+    $wpdb->update('wp_user_warranties', array('claimed_at' => gmdate('Y-m-d H:i:s'),  'customer_id' =>  $customerID), array('order_serial' => $orderSerial));
     wp_send_json($customersProducts, true);
 }
-
 
 function warranty_get_product_warranty($product_id)
 {
