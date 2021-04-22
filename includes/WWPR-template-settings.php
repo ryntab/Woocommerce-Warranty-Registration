@@ -194,122 +194,33 @@ class WWPR_Settings {
 			'description' => __( 'These are fairly standard form input fields.', 'wordpress-plugin-template' ),
 			'fields'      => array(
 				array(
-					'id'          => 'text_field',
-					'label'       => __( 'Some Text', 'wordpress-plugin-template' ),
-					'description' => __( 'This is a standard text field.', 'wordpress-plugin-template' ),
-					'type'        => 'text',
-					'default'     => '',
-					'placeholder' => __( 'Placeholder text', 'wordpress-plugin-template' ),
-				),
-				array(
-					'id'          => 'password_field',
-					'label'       => __( 'A Password', 'wordpress-plugin-template' ),
-					'description' => __( 'This is a standard password field.', 'wordpress-plugin-template' ),
-					'type'        => 'password',
-					'default'     => '',
-					'placeholder' => __( 'Placeholder text', 'wordpress-plugin-template' ),
-				),
-				array(
-					'id'          => 'secret_text_field',
-					'label'       => __( 'Some Secret Text', 'wordpress-plugin-template' ),
-					'description' => __( 'This is a secret text field - any data saved here will not be displayed after the page has reloaded, but it will be saved.', 'wordpress-plugin-template' ),
-					'type'        => 'text_secret',
-					'default'     => '',
-					'placeholder' => __( 'Placeholder text', 'wordpress-plugin-template' ),
-				),
-				array(
-					'id'          => 'text_block',
-					'label'       => __( 'A Text Block', 'wordpress-plugin-template' ),
-					'description' => __( 'This is a standard text area.', 'wordpress-plugin-template' ),
-					'type'        => 'textarea',
-					'default'     => '',
-					'placeholder' => __( 'Placeholder text for this textarea', 'wordpress-plugin-template' ),
-				),
-				array(
 					'id'          => 'single_checkbox',
-					'label'       => __( 'An Option', 'wordpress-plugin-template' ),
-					'description' => __( 'A standard checkbox - if you save this option as checked then it will store the option as \'on\', otherwise it will be an empty string.', 'wordpress-plugin-template' ),
+					'label'       => __( 'Disable Registrations', 'wordpress-plugin-template' ),
+					'description' => __( 'Check to disable product registrations on this site.', 'wordpress-plugin-template' ),
 					'type'        => 'checkbox',
 					'default'     => '',
 				),
 				array(
-					'id'          => 'select_box',
-					'label'       => __( 'A Select Box', 'wordpress-plugin-template' ),
-					'description' => __( 'A standard select box.', 'wordpress-plugin-template' ),
-					'type'        => 'select',
-					'options'     => array(
-						'drupal'    => 'Drupal',
-						'joomla'    => 'Joomla',
-						'wordpress' => 'WordPress',
-					),
-					'default'     => 'wordpress',
+					'id'          => 'text_field',
+					'label'       => __( 'Callout Header', 'wordpress-plugin-template' ),
+					'type'        => 'text',
+					'default'     => '',
+					'placeholder' => __( 'Have a paramotor on the way?', 'wordpress-plugin-template' ),
 				),
 				array(
-					'id'          => 'radio_buttons',
-					'label'       => __( 'Some Options', 'wordpress-plugin-template' ),
-					'description' => __( 'A standard set of radio buttons.', 'wordpress-plugin-template' ),
-					'type'        => 'radio',
-					'options'     => array(
-						'superman' => 'Superman',
-						'batman'   => 'Batman',
-						'ironman'  => 'Iron Man',
-					),
-					'default'     => 'batman',
+					'id'          => 'text_block',
+					'label'       => __( 'Callout Header Blurb', 'wordpress-plugin-template' ),
+					'description' => __( 'Displays as a paragraph below the callout header.', 'wordpress-plugin-template' ),
+					'type'        => 'textarea',
+					'default'     => '',
 				),
-				array(
-					'id'          => 'multiple_checkboxes',
-					'label'       => __( 'Some Items', 'wordpress-plugin-template' ),
-					'description' => __( 'You can select multiple items and they will be stored as an array.', 'wordpress-plugin-template' ),
-					'type'        => 'checkbox_multi',
-					'options'     => array(
-						'square'    => 'Square',
-						'circle'    => 'Circle',
-						'rectangle' => 'Rectangle',
-						'triangle'  => 'Triangle',
-					),
-					'default'     => array( 'circle', 'triangle' ),
-				),
-			),
-		);
-
-		$settings['extra'] = array(
-			'title'       => __( 'Extra', 'wordpress-plugin-template' ),
-			'description' => __( 'These are some extra input fields that maybe aren\'t as common as the others.', 'wordpress-plugin-template' ),
-			'fields'      => array(
 				array(
 					'id'          => 'number_field',
-					'label'       => __( 'A Number', 'wordpress-plugin-template' ),
-					'description' => __( 'This is a standard number field - if this field contains anything other than numbers then the form will not be submitted.', 'wordpress-plugin-template' ),
+					'label'       => __( 'Warranty Registration Period Limit', 'wordpress-plugin-template' ),
+					'description' => __( 'Set the amount of days in which after a serial is activated, a customer will be able to claim the warranty.', 'wordpress-plugin-template' ),
 					'type'        => 'number',
-					'default'     => '',
-					'placeholder' => __( '42', 'wordpress-plugin-template' ),
-				),
-				array(
-					'id'          => 'colour_picker',
-					'label'       => __( 'Pick a colour', 'wordpress-plugin-template' ),
-					'description' => __( 'This uses WordPress\' built-in colour picker - the option is stored as the colour\'s hex code.', 'wordpress-plugin-template' ),
-					'type'        => 'color',
-					'default'     => '#21759B',
-				),
-				array(
-					'id'          => 'an_image',
-					'label'       => __( 'An Image', 'wordpress-plugin-template' ),
-					'description' => __( 'This will upload an image to your media library and store the attachment ID in the option field. Once you have uploaded an imge the thumbnail will display above these buttons.', 'wordpress-plugin-template' ),
-					'type'        => 'image',
-					'default'     => '',
-					'placeholder' => '',
-				),
-				array(
-					'id'          => 'multi_select_box',
-					'label'       => __( 'A Multi-Select Box', 'wordpress-plugin-template' ),
-					'description' => __( 'A standard multi-select box - the saved data is stored as an array.', 'wordpress-plugin-template' ),
-					'type'        => 'select_multi',
-					'options'     => array(
-						'linux'   => 'Linux',
-						'mac'     => 'Mac',
-						'windows' => 'Windows',
-					),
-					'default'     => array( 'linux' ),
+					'default'     => '30',
+					'placeholder' => __( '30', 'wordpress-plugin-template' ),
 				),
 			),
 		);
@@ -401,7 +312,7 @@ class WWPR_Settings {
 
 		// Build page HTML.
 		$html      = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
-			$html .= '<h2>' . __( 'Plugin Settings', 'wordpress-plugin-template' ) . '</h2>' . "\n";
+			$html .= '<h2>' . __( 'Warranty Registration Settings', 'wordpress-plugin-template' ) . '</h2>' . "\n";
 
 			$tab = '';
 		//phpcs:disable
@@ -454,11 +365,11 @@ class WWPR_Settings {
 				$html .= ob_get_clean();
 
 				$html     .= '<p class="submit">' . "\n";
-					$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-					$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings', 'wordpress-plugin-template' ) ) . '" />' . "\n";
+				$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
+				$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings', 'wordpress-plugin-template' ) ) . '" />' . "\n";
 				$html     .= '</p>' . "\n";
-			$html         .= '</form>' . "\n";
-		$html             .= '</div>' . "\n";
+				$html         .= '</form>' . "\n";
+				$html             .= '</div>' . "\n";
 
 		echo $html; //phpcs:ignore
 	}
