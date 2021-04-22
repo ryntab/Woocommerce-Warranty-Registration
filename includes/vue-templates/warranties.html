@@ -179,6 +179,16 @@
         </button>
       </div>
 
+       <!-- Exists Already -->
+       <div v-if="currentStatus == 'serialClaimed'" class="card-form__inner anim">
+        <h4>This serial has already been registered 🤔</h4>
+        <p>The serial you provided has already been registered in our database. Try entering the serial again or reach out to our
+          support team so that we may help you.</p>
+        <button v-on:click="setHome()" class="card-form__button">
+          Go Back
+        </button>
+      </div>
+
       <!-- List Fetched Orders -->
       <div v-if="currentStatus == 'list-orders'" class="card-form__inner
               anim">
@@ -331,10 +341,8 @@
       },
       validateSerial(serial) {
         if (serial.length < 6) {
-          console.log('invalid')
           this.serialValid = false;
         } else {
-          console.log('valid')
           this.serialValid = true;
         }
         this.canRegister();
@@ -381,7 +389,7 @@
               this.busy = false;
               this.currentStatus = 'verified';
             } else if (response.valid == false) {
-              this.currentStatus = 'serialMatchFailed';
+              this.currentStatus = response.reason;
               return;
             }
           })
