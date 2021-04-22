@@ -392,9 +392,11 @@
         var data = {
           action: 'orderGetParts',
           customerID: userID,
+          orderSerial: this.serialNumber,
           orderID: this.orderID,
         };
         data = Qs.stringify(data);
+        console.log(data)
         axios.post(woocommerce_params.ajax_url + '?' + data)
           .then(response => {
             this.currentStatus = 'list-orders';

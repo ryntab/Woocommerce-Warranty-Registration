@@ -44,7 +44,7 @@
 			event.preventDefault();
 			$('.edit-date-time').hide()
 			$('#save-serial').text('Submitting...');
-			  // We'll pass this variable to the PHP function example_ajax_request
+			  // We'll pass this variable to the PHP function admin_set_serial_data
 			  var serial = $('#serial-input').val()
 
 			  if ($('date-registered').text() == ''){
@@ -59,7 +59,7 @@
 			  $.ajax({
 				  url: ajaxurl,
 				  data: {
-					  'action': 'example_ajax_request',
+					  'action': 'admin_set_serial_data',
 					  'serial' : serial,
 					  'postID' : $("#post_ID").val(),
 					  'time' : currentTime,

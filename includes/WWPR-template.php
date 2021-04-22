@@ -169,11 +169,11 @@ class WWPR
 		add_action('woocommerce_account_warranty_endpoint',  array($this, 'warranty_account_content'));
 
 		//Add Product Edit Page Panels
-		add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'warranty_admin_woo_panel' ) );
-		add_action( 'woocommerce_product_data_panels', array( $this, 'panel_add_custom_box' ) );
+		add_action('woocommerce_product_write_panel_tabs', array($this, 'warranty_admin_woo_panel'));
+		add_action('woocommerce_product_data_panels', array($this, 'panel_add_custom_box'));
 
 		//Save our ship! I mean meta
-		add_action( 'woocommerce_process_product_meta', array( $this, 'save_product_warranty' ) );
+		add_action('woocommerce_process_product_meta', array($this, 'save_product_warranty'));
 
 		// Load API for generic admin functions.
 		if (is_admin()) {
@@ -423,7 +423,6 @@ class WWPR
 		} else {
 			$woocommerce->add_inline_js($inline);
 		}
-
 	}
 
 	/* Product Warranty Data */
@@ -626,8 +625,13 @@ class WWPR
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = "CREATE TABLE `{$wpdb->base_prefix}user_warranties` (order_id INT UNSIGNED NOT NULL, customer_id INT UNSIGNED NOT NULL, created_at datetime NOT NULL,
-		expires_at datetime NOT NULL, PRIMARY KEY  (order_id)) $charset_collate;";
+		$sql = "CREATE TABLE `{$wpdb->base_prefix}user_warranties` (
+		order_id INT UNSIGNED NOT NULL, 
+		order_serial text NOT NULL, 
+		customer_id INT UNSIGNED NOT NULL, 
+		registered_at datetime NOT NULL,
+		claimed_at datetime NOT NULL, 
+		PRIMARY KEY  (order_id)) $charset_collate;";
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
 	} // End install ()
