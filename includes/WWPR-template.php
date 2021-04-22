@@ -129,7 +129,6 @@ class WWPR
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'), 10);
 
 		//Load our special scripts if on a wooocommmerce account page.
-
 		add_action('wp_enqueue_scripts', array($this, 'enqueue_account_scripts'), 10);
 
 		add_action('woocommerce_loaded', 'woo_load_actions');
@@ -144,17 +143,14 @@ class WWPR
 		function registered_warranties()
 		{
 			global $wpdb;
-			$results =
-				$wpdb->get_results(
-					$wpdb->prepare("SELECT order_id FROM wp_user_warranties WHERE customer_id = 2")
-				);
-			$data['registered_warranties'] = $results;
-?>
+			$userID = get_current_user_id();
+			$results = $wpdb->get_results($wpdb->prepare("SELECT order_id FROM wp_user_warranties WHERE customer_id = $userID"));
+			$data['registered_warranties'] = $results; ?>
 			<script>
 				var registeredWarranties = '<?php echo json_encode($data); ?>';
-				let userID = '<?php echo get_current_user_id(); ?>';
+				let userID = '<?php echo $userID ?>';
 			</script>
-<?php
+		<?php
 		}
 
 
