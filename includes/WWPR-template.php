@@ -625,8 +625,8 @@ class WWPR
 		order_id INT UNSIGNED NOT NULL, 
 		order_serial text NOT NULL, 
 		customer_id INT UNSIGNED NOT NULL, 
-		registered_at datetime NOT NULL,
-		claimed_at datetime NOT NULL, 
+		registered_at date NOT NULL,
+		claimed_at date NOT NULL, 
 		PRIMARY KEY  (order_id)) $charset_collate;";
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
