@@ -9,7 +9,7 @@
 		var searchRequest = null;
 		let theDate = $("#theDate").val()
 		$( "#datepicker" ).datepicker({ 
-			dateFormat: 'dd-mm-yy',
+			dateFormat: 'yy-mm-dd',
 			defaultDate: theDate,
 			setDate: new Date(theDate),
 		});
@@ -40,19 +40,17 @@
 
 		$("#save-serial").on('click', function(event){
 			var d = new Date();
-			var currentTime = d.toLocaleTimeString();
+			//var currentTime = d.toLocaleTimeString();
 			event.preventDefault();
 			$('.edit-date-time').hide()
 			$('#save-serial').text('Submitting...');
 			  // We'll pass this variable to the PHP function admin_set_serial_data
 			  var serial = $('#serial-input').val()
 
-			  if ($('date-registered').text() == ''){
-				  setDate = new Date().toISOString().replace(/T.*/,'').split('-').reverse().join('-');
-			  } else {
-				if ($( "#datepicker" ).val()) setDate = $("#datepicker").val();
-				if (!$( "#datepicker" ).val()) setDate = $("#datepicker").text();
-			  }
+
+			if ($( "#datepicker" ).val()) setDate = $("#datepicker").val();
+			if (!$( "#datepicker" ).val()) setDate = $("#datepicker").text();
+			  
 			  
 			  //new Date().toISOString().replace(/T.*/,'').split('-').reverse().join('-')
 			  // This does the ajax request
@@ -62,13 +60,13 @@
 					  'action': 'admin_set_serial_data',
 					  'serial' : serial,
 					  'postID' : $("#post_ID").val(),
-					  'time' : currentTime,
+					  //time' : currentTime,
 					  'date' : setDate,
 				  },
 				  success:function(data) {
 					  if (dateChanged){
 						$('.date-registered').text($('#datepicker').val());
-						$('.time-registered').text(currentTime);
+						//$('.time-registered').text(currentTime);
 					  }
 					  // This outputs the result of the ajax request
 					  console.log(data);
