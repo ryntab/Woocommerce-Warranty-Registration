@@ -74,6 +74,7 @@ function order_my_custom()
 {
     global $wpdb;
     global $post;
+
     $order = wc_get_order($post->ID);
     $id =  $order->get_id();
     $firstName = get_post_meta($id, 'customer_first_name', true);
@@ -81,9 +82,7 @@ function order_my_custom()
     $user_warranty = $wpdb->get_results($wpdb->prepare("SELECT * FROM `wp_user_warranties` WHERE `order_id` = '$id'"));
     if ($user_warranty) {
         $registrationDate = $user_warranty[0]->registered_at;
-        $registrationTime = $user_warranty[0]->registered_at;
-        $claimedDate = $user_warranty[0]->registered_at;
-        $claimedTime = $user_warranty[0]->registered_at;
+        $claimedDate = $user_warranty[0]->claimed_at;
         $registrationSerial = $user_warranty[0]->order_serial;
     }
 
@@ -92,9 +91,7 @@ function order_my_custom()
         $noteBar = 'There is no serial registered yet for this order.';
     } else {
         $serialExists = true;
-        $noteBar = 'Serial was registered for ' . $firstName .
-            ' on: <span class="date-registered">' . $registrationDate .
-            '</span> at:  <span class="time-registered">' .  $registrationTime . '</span>';
+        $noteBar = 'Serial was registered for ' . $firstName . ' on: <span class="date-registered">' . $registrationDate .'</span>';
     }
     echo '<input type="text" data-serialExists="' . $serialExists . '" name="doors" id="serial-input" value="' . $registrationSerial . '"/>';
     echo '<button type="submit" id="save-serial"/>Register Serial</button>';
@@ -103,7 +100,7 @@ function order_my_custom()
     echo '<div class="edit-date">Edit Date</div>';
     echo '<div style="display:none" class="edit-date-time"><input autocomplete="off" type="text" id="datepicker"></div>';
     if ($claimedTime) {
-        echo '<p class="note-bar">Warranty claimed by ' . $firstName . ' on: <span class="date-registered">' . $claimedDate . '</span> at:  <span class="time-registered">' . $claimedTime . '</span></p>';
+        echo '<p class="note-bar">Warranty claimed by ' . $firstName . ' on: <span class="date-registered">' . $claimedDate . '</span></p>';
     }
 }
 
@@ -114,20 +111,23 @@ function admin_set_serial_data()
         global $wpdb;
         $serial = strVal($_REQUEST['serial']);
         $orderID = $_REQUEST['postID'];
+        $date = $_REQUEST['date'];
 
         $order = wc_get_order($orderID);
         $warranty_data = $wpdb->get_results("SELECT order_serial FROM wp_user_warranties WHERE order_id = '$orderID'");
         $oldserial = $warranty_data[0]->order_serial;
 
+        $date != '' ? $date = $_REQUEST['date'] : $date = gmdate('Y-m-d');
+
         if ($oldserial) {
             if ($serial != $oldserial) {
-                $wpdb->update('wp_user_warranties', array('order_serial' => $serial), array('order_id' => $orderID));
+                $wpdb->update('wp_user_warranties', array('order_serial' => $serial, 'registered_at' => $date), array('order_id' => $orderID));
                 $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to ' . $serial . ' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
                 $order->add_order_note($note);
             }
         } else {
             $wpdb->insert('wp_user_warranties', array(
-                'customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => gmdate('Y-m-d H:i:s'), 'claimed_at' => Null,
+                'customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => $date, 'claimed_at' => Null,
             ));
             $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
             $order->add_order_note($note);
@@ -199,7 +199,7 @@ function orderGetParts()
         array_push($customersProducts, $data);
     endforeach;
 
-    $wpdb->update('wp_user_warranties', array('claimed_at' => gmdate('Y-m-d H:i:s'),  'customer_id' =>  $customerID), array('order_serial' => $orderSerial));
+    $wpdb->update('wp_user_warranties', array('claimed_at' => gmdate('Y-m-d'),  'customer_id' =>  $customerID), array('order_serial' => $orderSerial));
     wp_send_json($customersProducts, true);
 }
 
