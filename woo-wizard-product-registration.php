@@ -124,11 +124,13 @@ function admin_set_serial_data()
                 $wpdb->update('wp_user_warranties', array('order_serial' => $serial, 'registered_at' => $date), array('order_id' => $orderID));
                 $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to ' . $serial . ' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
                 $order->add_order_note($note);
+            } else {
+                $wpdb->update('wp_user_warranties', array('order_serial' => $serial, 'registered_at' => $date), array('order_id' => $orderID));
+                $note = 'Warranty Serial Updated';
+                $order->add_order_note($note);
             }
         } else {
-            $wpdb->insert('wp_user_warranties', array(
-                'customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => $date, 'claimed_at' => Null,
-            ));
+            $wpdb->insert('wp_user_warranties', array('customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => $date, 'claimed_at' => Null));
             $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
             $order->add_order_note($note);
         }
@@ -152,7 +154,21 @@ function orderSerialValidity()
     if (isset($_REQUEST)) {
         global $wpdb;
         $serial = $_REQUEST['serial'];
-        $results = $wpdb->get_results($wpdb->prepare("SELECT order_id, claimed_at FROM `wp_user_warranties` WHERE `order_serial` = '$serial'"));
+        $results = $wpdb->get_results($wpdb->prepare("SELECT order_id, claimed_at, registered_at FROM `wp_user_warranties` WHERE `order_serial` = '$serial'"));
+
+        $daysToClaim = get_option( 'wrs_days_to_claim' );
+        $registeredAt = $results[0]->registered_at;
+
+        $datetime = new DateTime($registeredAt);
+        $datetime->modify('+'.$daysToClaim.' day');
+        $dueDate = $datetime->format('Y-m-d');
+
+        if( strtotime($dueDate) < strtotime('now') ) {
+            $data['valid'] = false;
+            $data['reason'] = 'serialDatePassed';
+            wp_send_json($data);
+            die();
+        }
 
         if ($results[0]->claimed_at != null) {
             $data['valid'] = false;
@@ -166,7 +182,6 @@ function orderSerialValidity()
                 $data['reason'] = 'serialMatchFailed';
             }
         }
-
         wp_send_json($data);
     }
 }
