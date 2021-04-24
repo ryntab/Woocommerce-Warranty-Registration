@@ -168,7 +168,7 @@
           </svg></div>
       </div>
 
-      <!-- Failed -->
+      <!-- Failed: Serial Match Failed -->
       <div v-if="currentStatus == 'serialMatchFailed'" class="card-form__inner anim">
         <h4>The serial entered did not match any existing orders 😔</h4>
         <p>The serial you provided was not matched to any orders in our
@@ -179,7 +179,17 @@
         </button>
       </div>
 
-      <!-- Exists Already -->
+       <!-- Failed: Passed Due Date-->
+       <div v-if="currentStatus == 'serialDatePassed'" class="card-form__inner anim">
+        <h4>Unfortunately you are past the warranty regitration period 😔</h4>
+        <p>Your order has passed the warranty registration period. Have any questions? Reach out to our
+          support team so that we may help you.</p>
+        <button v-on:click="setHome()" class="card-form__button">
+          Go Back
+        </button>
+      </div>
+
+      <!-- Failed: Serial Exists Already -->
       <div v-if="currentStatus == 'serialClaimed'" class="card-form__inner anim">
         <h4>This serial has already been registered 🤔</h4>
         <p>The serial you provided has already been registered in our database. Try entering the serial again or reach
