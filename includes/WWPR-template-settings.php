@@ -58,7 +58,7 @@ class WWPR_Settings {
 	public function __construct( $parent ) {
 		$this->parent = $parent;
 
-		$this->base = 'wpt_';
+		$this->base = 'wrs_';
 
 		// Initialise settings.
 		add_action( 'init', array( $this, 'init_settings' ), 11 );
@@ -215,7 +215,7 @@ class WWPR_Settings {
 					'default'     => '',
 				),
 				array(
-					'id'          => 'number_field',
+					'id'          => 'days_to_claim',
 					'label'       => __( 'Warranty Registration Period Limit', 'wordpress-plugin-template' ),
 					'description' => __( 'Set the amount of days in which after a serial is activated, a customer will be able to claim the warranty.', 'wordpress-plugin-template' ),
 					'type'        => 'number',
