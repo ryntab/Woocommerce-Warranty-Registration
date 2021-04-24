@@ -622,11 +622,11 @@ class WWPR
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE `{$wpdb->base_prefix}user_warranties` (
-		order_id INT UNSIGNED NOT NULL, 
-		order_serial text NOT NULL, 
-		customer_id INT UNSIGNED NOT NULL, 
-		registered_at date NOT NULL,
-		claimed_at date NOT NULL, 
+		order_id INT UNSIGNED NULL, 
+		order_serial text NULL, 
+		customer_id INT UNSIGNED NULL, 
+		registered_at date NULL,
+		claimed_at date NULL, 
 		PRIMARY KEY  (order_id)) $charset_collate;";
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		dbDelta($sql);
