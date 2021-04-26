@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: GP - Warranty Registration 🔥‍
- * Version: 1.0.0
+ * Version: 1.1.0
  * Plugin URI: http://www.gravityparamotors.com
  * Description: Product warranty registration.... fun. Make sure to re-save permalinks when activating for the first time.
  * Author: Ryan Taber
