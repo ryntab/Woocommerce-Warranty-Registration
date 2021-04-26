@@ -9,9 +9,10 @@ GP - Warranty Registration 🔥‍
 
 This plugin includes the following features:
 
-+ Register a serial for each order.
-+ Allow customers to claim the serial and order.
-+ Change the date a serial is registered.
++ Registering a serial for each order.
++ Allow customers to claim the serial and order through the woocommerce account dashboard.
++ [Admin] Change the date a serial is registered.
++ [Admin] Change the global registration period (set in days) in which a warranty registration will be accepted.
 + Full & minified Javascript files
 + Grunt.js support
 + Standard enqueue functions for the dashboard and the frontend
