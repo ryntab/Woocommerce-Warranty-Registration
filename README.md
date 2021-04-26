@@ -5,7 +5,7 @@
 GP - Warranty Registration 🔥‍
 =========================
 
-## Serial based product registration.
+## Serial based product warranty registration.
 
 This plugin includes the following features:
 
