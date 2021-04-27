@@ -4,7 +4,7 @@
  * Plugin Name: Woo Warranty Registration 🔥‍
  * Version: 1.1.0
  * Plugin URI: http://www.gravityparamotors.com
- * Description: Product warranty registration.... fun. Make sure to re-save permalinks when activating for the first time.
+ * Description: Serial Based Warranty Registration, allowing customers to claim any order.
  * Author: Ryan Taber
  * Author URI: http://www.gravityparamotors.com
  * Requires at least: 4.0
@@ -21,9 +21,6 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
-
-
 
 // Load plugin class files.
 require_once 'includes/WWPR-template.php';
