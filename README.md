@@ -22,5 +22,5 @@ This plugin includes the following features:
 <p align="center">
     <br/><br/>
     Made with 💜 by <a href="https://glidersports.com/">Glidersports Dev Team</a>.<br/>
-    <a href="#">For Wordpress, Woocommerc</a>
+    <a href="#">For Wordpress, Woocommerce</a>
 </p>
