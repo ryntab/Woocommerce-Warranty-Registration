@@ -12,7 +12,7 @@ read GRUNT
 printf "Initialise new git repo (y/n): "
 read NEWREPO
 
-DEFAULT_NAME="Woo Wizard Product Registration"
+DEFAULT_NAME="Woo Warranty Registration"
 DEFAULT_CLASS=${DEFAULT_NAME// /_}
 DEFAULT_TOKEN=$( tr '[A-Z]' '[a-z]' <<< $DEFAULT_CLASS)
 DEFAULT_SLUG=${DEFAULT_TOKEN//_/-}

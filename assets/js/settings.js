@@ -1,7 +1,7 @@
 /**
  * Plugin Template js settings.
  *
- *  @package Woo Wizard Product Registration/Settings
+ *  @package Woo Warranty Registration/Settings
  */
 
 jQuery( document ).ready(

@@ -2,7 +2,7 @@
 /**
  * Post type declaration file.
  *
- * @package Woo Wizard Product Registration/Includes
+ * @package Woo Warranty Registration/Includes
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

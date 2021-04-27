@@ -1,4 +1,4 @@
-[![Build Status](https://www.travis-ci.com/ryntab/Woocommerce-Warranty-Registration.svg?branch=main)](https://www.travis-ci.com/ryntab/Woocommerce-Warranty-Registration)
+[![Build Status](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template.svg?branch=master)](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template)
 
 `~Current Version:1.1~`
 
@@ -18,9 +18,3 @@ This plugin includes the following features:
 + Standard enqueue functions for the dashboard and the frontend
 + A .pot file to make localisation easier
 + Full text of the GPLv2 license
-
-<p align="center">
-    <br/><br/>
-    Made with 💜 by <a href="https://glidersports.com/">Glidersports Dev Team</a>.<br/>
-    For Wordpress, Woocommerce
-</p>

@@ -5,7 +5,7 @@
  * Ideally you will add all your clean-up scripts here
  * that will clean-up unused meta, options, etc. in the database.
  *
- * @package Woo Wizard Product Registration/Uninstall
+ * @package Woo Warranty Registration/Uninstall
  */
 
 // If plugin is not being uninstalled, exit (do nothing).

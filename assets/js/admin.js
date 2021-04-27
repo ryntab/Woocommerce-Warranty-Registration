@@ -1,7 +1,7 @@
 /**
  * Plugin Template admin js.
  *
- *  @package Woo Wizard Product Registration/JS
+ *  @package Woo Warranty Registration/JS
  */
  jQuery(function($) {
 	let searchRequest = null;

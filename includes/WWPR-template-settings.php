@@ -2,7 +2,7 @@
 /**
  * Settings class file.
  *
- * @package Woo Wizard Product Registration/Settings
+ * @package Woo Warranty Registration/Settings
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -128,8 +128,8 @@ class WWPR_Settings {
 			array(
 				'location'    => 'options', // Possible settings: options, menu, submenu.
 				'parent_slug' => 'options-general.php',
-				'page_title'  => __( 'Woo Wizard Product Registration', 'wordpress-plugin-template' ),
-				'menu_title'  => __( 'Woo Wizard Product Registration', 'wordpress-plugin-template' ),
+				'page_title'  => __( 'Woo Warranty Registration', 'wordpress-plugin-template' ),
+				'menu_title'  => __( 'Woo Warranty Registration', 'wordpress-plugin-template' ),
 				'capability'  => 'manage_options',
 				'menu_slug'   => $this->parent->_token . '_settings',
 				'function'    => array( $this, 'settings_page' ),

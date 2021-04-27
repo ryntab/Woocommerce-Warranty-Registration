@@ -1,6 +1,6 @@
 {
 	"name": "wordpress-plugin-template",
-	"title": "Woo Wizard Product Registration",
+	"title": "Woo Warranty Registration",
 	"version": "1.0.0",
 	"homepage": "https://github.com/hlashbrooke/WordPress-Plugin-Template",
 	"main": "Gruntfile.js",
