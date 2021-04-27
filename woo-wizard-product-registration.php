@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Plugin Name: GP - Warranty Registration 🔥‍
+ * Plugin Name: Woo Warranty Registration 🔥‍
  * Version: 1.1.0
  * Plugin URI: http://www.gravityparamotors.com
- * Description: A warranty registration with unique serial keys and user side interface to view and claim orders.
+ * Description: Product warranty registration.... fun. Make sure to re-save permalinks when activating for the first time.
  * Author: Ryan Taber
  * Author URI: http://www.gravityparamotors.com
  * Requires at least: 4.0
@@ -22,6 +22,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+
+
+
 // Load plugin class files.
 require_once 'includes/WWPR-template.php';
 require_once 'includes/WWPR-template-settings.php';
@@ -34,6 +37,7 @@ require_once 'includes/lib/WWPR-Woo-Wizard-Integration.php';
 
 //Load Github updater
 include_once('updater.php');
+
 
 if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
     $config = array(
@@ -51,6 +55,7 @@ if (is_admin()) { // note the use of is_admin() to double check that this is hap
     );
     new WP_GitHub_Updater($config);
 }
+
 
 /**
  * Returns the main instance of WWPR to prevent the need to use globals.
