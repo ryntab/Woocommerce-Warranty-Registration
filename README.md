@@ -1,4 +1,4 @@
-[![Build Status](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template.svg?branch=master)](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template)
+[![Build Status](https://www.travis-ci.com/ryntab/Woocommerce-Warranty-Registration.svg?branch=main)](https://www.travis-ci.com/ryntab/Woocommerce-Warranty-Registration)
 
 `~Current Version:1.1~`
 
