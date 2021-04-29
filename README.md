@@ -2,7 +2,7 @@
 
 `~Current Version:1.1~`
 
-GP - Warranty Registration 🔥‍
+Woocommerce Warranty Registration 🔥‍
 =========================
 
 ## Serial based product warranty registration.
