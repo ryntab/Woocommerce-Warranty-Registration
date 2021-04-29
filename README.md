@@ -18,3 +18,10 @@ This plugin includes the following features:
 + Standard enqueue functions for the dashboard and the frontend
 + A .pot file to make localisation easier
 + Full text of the GPLv2 license
+
+<p align="center">
+    <br/><br/>
+    Made with 💜 by <a href="https://glidersports.com/">Glidersports Dev Team</a>.<br/>
+    <a href="#">For Wordpress, Woocommerce</a>
+    For Wordpress, Woocommerce
+</p>
