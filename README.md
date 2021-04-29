@@ -2,7 +2,7 @@
 
 `~Current Version:1.1~`
 
-Woocommerce Warranty Registration 🔥‍
+Woocommerce Warranty Registration 🔥
 =========================
 
 ## Serial based product warranty registration.
