@@ -109,7 +109,7 @@ function order_my_custom()
         $noteBar = 'There is no serial registered yet for this order.';
     } else {
         $serialExists = true;
-        $noteBar = 'Serial was registered for ' . $firstName . ' on: <span class="date-registered">' . $registrationDate .'</span>';
+        $noteBar = 'Serial was registered for ' . $firstName . ' on: <span class="date-registered">' . $registrationDate . '</span>';
     }
     echo '<input type="text" data-serialExists="' . $serialExists . '" name="doors" id="serial-input" value="' . $registrationSerial . '"/>';
     echo '<button type="submit" id="save-serial"/>Register Serial</button>';
@@ -166,6 +166,57 @@ function verify_serial()
     die();
 }
 
+//Middleware: Validate and register serial on account registration 
+function account_registration_serial_verify($user_id)
+{
+    global $wpdb;
+    global $woocommerce;
+
+    if (isset($_POST['first_name']))
+        var_dump($_POST['first_name']);
+    $url = explode('?serialKey=', $_SERVER['REQUEST_URI']);
+    $parsedURL = $url ? $url[1] :  false;
+    
+    //Early return if no serial is found in the url
+    if ($parsedURL == NULL){
+        $_SESSION["alert"] = 'No matching serial was found 😔!';
+        return;
+    }
+
+    //$parsedURL = base64_decode($parsedURL);
+
+    $results = $wpdb->get_results($wpdb->prepare("SELECT order_id, claimed_at, registered_at FROM `wp_user_warranties` WHERE `order_serial` = '$parsedURL'"));
+
+    $validity = (count($results) != 0) ? true : false;
+
+    //Early return if the sku does not exist
+    if (!$validity) {
+        return;
+    }
+
+    //Serial already claimed
+    if ($results[0]->claimed_at != null) {
+        $_SESSION["alert"] = 'This serial is already registered!';
+        return; 
+    }
+
+
+    $daysToClaim = get_option('wrs_days_to_claim');
+    $registeredAt = $results[0]->registered_at;
+
+    $datetime = new DateTime($registeredAt);
+    $datetime->modify('+' . $daysToClaim . ' day');
+    $dueDate = $datetime->format('Y-m-d');
+
+    if (strtotime($dueDate) < strtotime('now')) {
+        $_SESSION["alert"] = 'Unfortunately the warranty registration period has passed for this order 😔!';
+       return;
+    }
+
+    $_SESSION["alert"] = $parsedURL . 'was registered for warranty, you can view your active warranties in the tab below!';
+    $wpdb->update('wp_user_warranties', array('claimed_at' => gmdate('Y-m-d'),  'customer_id' =>  $user_id), array('order_serial' => $parsedURL));
+}
+
 //Frontend: Checks if submitted serial number exists in the database, returns order number on success
 function orderSerialValidity()
 {
@@ -174,14 +225,14 @@ function orderSerialValidity()
         $serial = $_REQUEST['serial'];
         $results = $wpdb->get_results($wpdb->prepare("SELECT order_id, claimed_at, registered_at FROM `wp_user_warranties` WHERE `order_serial` = '$serial'"));
 
-        $daysToClaim = get_option( 'wrs_days_to_claim' );
+        $daysToClaim = get_option('wrs_days_to_claim');
         $registeredAt = $results[0]->registered_at;
 
         $datetime = new DateTime($registeredAt);
-        $datetime->modify('+'.$daysToClaim.' day');
+        $datetime->modify('+' . $daysToClaim . ' day');
         $dueDate = $datetime->format('Y-m-d');
 
-        if( strtotime($dueDate) < strtotime('now') ) {
+        if (strtotime($dueDate) < strtotime('now')) {
             $data['valid'] = false;
             $data['reason'] = 'serialDatePassed';
             wp_send_json($data);
@@ -304,6 +355,23 @@ function warranty_get_default_warranty()
     return apply_filters('get_default_warranty', $warranty);
 }
 
+function serial_url_parse_start_session()
+{
+    if (!session_id())
+        session_start();
+}
+add_action("init", "serial_url_parse_start_session", 1);
+
+
+// define the woocommerce_before_my_account callback 
+function action_woocommerce_before_my_account(  ) { 
+    // make action magic happen here...
+    echo wc_add_notice( $_SESSION["alert"], 'notice' );
+}; 
+         
+// add the action 
+add_action( 'woocommerce_before_my_account', 'action_woocommerce_before_my_account', 10, 0 ); 
+
 add_action('wp_ajax_orderSerialValidity', 'orderSerialValidity');
 add_action('wp_ajax_nopriv_orderSerialValidity', 'orderSerialValidity');
 add_action('wp_ajax_admin_set_serial_data', 'admin_set_serial_data');
@@ -311,3 +379,4 @@ add_action('wp_ajax_nopriv_orderGetParts', 'orderGetParts');
 add_action('wp_ajax_orderGetParts', 'orderGetParts');
 add_action('wp_ajax_verify_serial', 'verify_serial');
 add_action('wp_ajax_nopriv_verify_serial', 'verify_serial');
+add_action('user_register', 'account_registration_serial_verify', 10, 1);
