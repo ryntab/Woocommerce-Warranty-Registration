@@ -222,6 +222,14 @@ class WWPR_Settings {
 					'default'     => '30',
 					'placeholder' => __( '30', 'wordpress-plugin-template' ),
 				),
+				array(
+					'id'          => 'remind_admin_email_again',
+					'label'       => __( 'Remind me to email customer after this many days.', 'wordpress-plugin-template' ),
+					'description' => __( 'Alert me that a customers warranty has not been claimed if this amount of days has passed since the serial was first registered.', 'wordpress-plugin-template' ),
+					'type'        => 'number',
+					'default'     => '5',
+					'placeholder' => __( '5', 'wordpress-plugin-template' ),
+				),
 			),
 		);
 
