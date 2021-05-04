@@ -22,6 +22,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+use App as Woocommerce_Dealer_Ordering;
+
+
 // Load plugin class files.
 require_once 'includes/WWPR-template.php';
 require_once 'includes/WWPR-template-settings.php';
@@ -126,6 +129,7 @@ function order_my_custom()
 function admin_set_serial_data()
 {
     if (isset($_REQUEST)) {
+
         global $wpdb;
         $serial = strVal($_REQUEST['serial']);
         $orderID = $_REQUEST['postID'];
@@ -136,7 +140,7 @@ function admin_set_serial_data()
         $oldserial = $warranty_data[0]->order_serial;
 
         $date != '' ? $date = $_REQUEST['date'] : $date = gmdate('Y-m-d');
-
+        
         if ($oldserial) {
             if ($serial != $oldserial) {
                 $wpdb->update('wp_user_warranties', array('order_serial' => $serial, 'registered_at' => $date), array('order_id' => $orderID));
@@ -151,9 +155,10 @@ function admin_set_serial_data()
             $wpdb->insert('wp_user_warranties', array('customer_id' => Null, 'order_id' => $orderID, 'order_serial' => $serial, 'registered_at' => $date, 'claimed_at' => Null));
             $note = 'Warranty Serial: ' . $serial . ' has been registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
             $order->add_order_note($note);
+
+            Woocommerce_Dealer_Ordering\Mailer::send_customer_register_alert($orderID);
         }
     }
-    die();
 }
 
 //Admin: Return true if serial does not exist
@@ -199,7 +204,6 @@ function account_registration_serial_verify($user_id)
         $_SESSION["alert"] = 'This serial is already registered!';
         return; 
     }
-
 
     $daysToClaim = get_option('wrs_days_to_claim');
     $registeredAt = $results[0]->registered_at;
