@@ -82,7 +82,7 @@ function add_meta_boxes()
 {
     add_meta_box(
         'woocommerce-product-registration',
-        __('Warranty Registration Serial #'),
+        __('Warranty Registration'),
         'order_my_custom',
         'shop_order',
         'normal',
@@ -145,7 +145,7 @@ function admin_set_serial_data()
             if ($serial != $oldserial) {
                 $wpdb->update('wp_user_warranties', array('order_serial' => $serial, 'registered_at' => $date), array('order_id' => $orderID));
                 $note = 'Warranty Serial Changed: ' . $oldserial . ' has been changed to ' . $serial . ' and registered for ' . get_post_meta($order->get_id(), 'customer_first_name', true) . ' ' . get_post_meta($order->get_id(), 'customer_last_name', true);
-                $order->add_order_note('$note');
+                $order->add_order_note($note);
 
                 Woocommerce_Dealer_Ordering\Mailer::send_customer_serial_update($orderID);
             } else {
