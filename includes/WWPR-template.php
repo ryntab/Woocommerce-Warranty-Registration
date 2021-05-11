@@ -200,7 +200,19 @@ class WWPR
 
 	public function warranty_account_content()
 	{
-		echo file_get_contents(__DIR__ . '/vue-templates/warranties.html');
+		$variables['blurb_header'] = get_option('wrs_blurb_header');
+        $variables['blurb_subtitle'] = get_option('wrs_blurb_subtitle');
+        $variables['blurb_button'] = get_option('wrs_blurb_button');
+
+		$template = file_get_contents(__DIR__ . '/vue-templates/warranties.html');
+    
+        foreach($variables as $key => $value)
+        {
+            $template = str_replace('[[ '.$key.' ]]', $value, $template);
+        }
+    
+		echo $template;
+		
 	}
 
 	public function warranty_admin_woo_panel()

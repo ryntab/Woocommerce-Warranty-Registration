@@ -190,8 +190,8 @@ class WWPR_Settings {
 	private function settings_fields() {
 
 		$settings['standard'] = array(
-			'title'       => __( 'Standard', 'wordpress-plugin-template' ),
-			'description' => __( 'These are fairly standard form input fields.', 'wordpress-plugin-template' ),
+			'title'       => __( 'Woo Warranty Settings', 'wordpress-plugin-template' ),
+			'description' => __( 'Here you can control the general settings for the Woo Warranty plugin, as well as edit some of the frontend displaying fields.', 'wordpress-plugin-template' ),
 			'fields'      => array(
 				array(
 					'id'          => 'single_checkbox',
@@ -201,18 +201,26 @@ class WWPR_Settings {
 					'default'     => '',
 				),
 				array(
-					'id'          => 'text_field',
+					'id'          => 'blurb_header',
 					'label'       => __( 'Callout Header', 'wordpress-plugin-template' ),
 					'type'        => 'text',
 					'default'     => '',
 					'placeholder' => __( 'Have a paramotor on the way?', 'wordpress-plugin-template' ),
 				),
 				array(
-					'id'          => 'text_block',
+					'id'          => 'blurb_subtitle',
 					'label'       => __( 'Callout Header Blurb', 'wordpress-plugin-template' ),
 					'description' => __( 'Displays as a paragraph below the callout header.', 'wordpress-plugin-template' ),
 					'type'        => 'textarea',
 					'default'     => '',
+				),
+				array(
+					'id'          => 'blurb_button',
+					'label'       => __( 'Callout Button Text', 'wordpress-plugin-template' ),
+					'description' => __( 'Displays as button text.', 'wordpress-plugin-template' ),
+					'type'        => 'text',
+					'default'     => '',
+					'placeholder' => __( 'Register', 'wordpress-plugin-template' ),
 				),
 				array(
 					'id'          => 'days_to_claim',
