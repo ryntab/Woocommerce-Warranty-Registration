@@ -52,17 +52,21 @@
 			if (!$( "#datepicker" ).val()) setDate = $("#datepicker").text();
 			  
 			  
+			  //new Date().toISOString().replace(/T.*/,'').split('-').reverse().join('-')
+			  // This does the ajax request
 			  $.ajax({
 				  url: ajaxurl,
 				  data: {
 					  'action': 'admin_set_serial_data',
 					  'serial' : serial,
 					  'postID' : $("#post_ID").val(),
+					  //time' : currentTime,
 					  'date' : setDate,
 				  },
 				  success:function(data) {
 					  if (dateChanged){
 						$('.date-registered').text($('#datepicker').val());
+						//$('.time-registered').text(currentTime);
 					  }
 					  // This outputs the result of the ajax request
 					  console.log(data);
