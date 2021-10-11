@@ -150,7 +150,7 @@ class WWPR
 				var registeredWarranties = '<?php echo json_encode($data); ?>';
 				let userID = '<?php echo $userID ?>';
 			</script>
-		<?php
+<?php
 		}
 
 
@@ -200,19 +200,7 @@ class WWPR
 
 	public function warranty_account_content()
 	{
-		$variables['blurb_header'] = get_option('wrs_blurb_header');
-        $variables['blurb_subtitle'] = get_option('wrs_blurb_subtitle');
-        $variables['blurb_button'] = get_option('wrs_blurb_button');
-
-		$template = file_get_contents(__DIR__ . '/vue-templates/warranties.html');
-    
-        foreach($variables as $key => $value)
-        {
-            $template = str_replace('[[ '.$key.' ]]', $value, $template);
-        }
-    
-		echo $template;
-		
+		echo file_get_contents(__DIR__ . '/vue-templates/warranties.html');
 	}
 
 	public function warranty_admin_woo_panel()
@@ -511,11 +499,16 @@ class WWPR
 	{
 		wp_register_script($this->_token . '-frontend', esc_url($this->assets_url) . 'js/frontend' . $this->script_suffix . '.js', array('jquery'), $this->_version, true);
 		wp_enqueue_script($this->_token . '-frontend');
+
 	} // End enqueue_scripts ()
 
 	public function enqueue_account_scripts()
 	{
-		wp_enqueue_script('vue', 'https://cdn.jsdelivr.net/npm/vue@2.6.12');
+		if (is_account_page()) {
+			wp_enqueue_script('vueCDN', 'https://cdn.jsdelivr.net/npm/vue@2.6.12');
+			wp_enqueue_script('axiosCDN', 'https://unpkg.com/axios@0.2.1/dist/axios.min.js');
+			wp_enqueue_script('aqsCDN', 'https://unpkg.com/qs@6.10.1/dist/qs.js');
+		}
 	}
 
 	/**

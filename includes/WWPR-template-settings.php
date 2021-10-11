@@ -190,8 +190,8 @@ class WWPR_Settings {
 	private function settings_fields() {
 
 		$settings['standard'] = array(
-			'title'       => __( 'Woo Warranty Settings', 'wordpress-plugin-template' ),
-			'description' => __( 'Here you can control the general settings for the Woo Warranty plugin, as well as edit some of the frontend displaying fields.', 'wordpress-plugin-template' ),
+			'title'       => __( 'Standard', 'wordpress-plugin-template' ),
+			'description' => __( 'These are fairly standard form input fields.', 'wordpress-plugin-template' ),
 			'fields'      => array(
 				array(
 					'id'          => 'single_checkbox',
@@ -201,26 +201,18 @@ class WWPR_Settings {
 					'default'     => '',
 				),
 				array(
-					'id'          => 'blurb_header',
+					'id'          => 'text_field',
 					'label'       => __( 'Callout Header', 'wordpress-plugin-template' ),
 					'type'        => 'text',
 					'default'     => '',
 					'placeholder' => __( 'Have a paramotor on the way?', 'wordpress-plugin-template' ),
 				),
 				array(
-					'id'          => 'blurb_subtitle',
+					'id'          => 'text_block',
 					'label'       => __( 'Callout Header Blurb', 'wordpress-plugin-template' ),
 					'description' => __( 'Displays as a paragraph below the callout header.', 'wordpress-plugin-template' ),
 					'type'        => 'textarea',
 					'default'     => '',
-				),
-				array(
-					'id'          => 'blurb_button',
-					'label'       => __( 'Callout Button Text', 'wordpress-plugin-template' ),
-					'description' => __( 'Displays as button text.', 'wordpress-plugin-template' ),
-					'type'        => 'text',
-					'default'     => '',
-					'placeholder' => __( 'Register', 'wordpress-plugin-template' ),
 				),
 				array(
 					'id'          => 'days_to_claim',
@@ -229,14 +221,6 @@ class WWPR_Settings {
 					'type'        => 'number',
 					'default'     => '30',
 					'placeholder' => __( '30', 'wordpress-plugin-template' ),
-				),
-				array(
-					'id'          => 'remind_admin_email_again',
-					'label'       => __( 'Remind me to email customer after this many days.', 'wordpress-plugin-template' ),
-					'description' => __( 'Alert me that a customers warranty has not been claimed if this amount of days has passed since the serial was first registered.', 'wordpress-plugin-template' ),
-					'type'        => 'number',
-					'default'     => '5',
-					'placeholder' => __( '5', 'wordpress-plugin-template' ),
 				),
 			),
 		);
