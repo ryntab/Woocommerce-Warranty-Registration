@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: Woo Warranty Registration 🔥‍
- * Version: 1.1.0
+ * Version: 1.1.1
  * Plugin URI: http://www.gravityparamotors.com
  * Description: Serial Based Warranty Registration, allowing customers to claim any order.
  * Author: Ryan Taber
