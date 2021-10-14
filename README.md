@@ -1,6 +1,6 @@
 [![Build Status](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template.svg?branch=master)](https://www.travis-ci.org/wpugph/WordPress-Plugin-Template)
 
-`~Current Version:1.1.2~`
+`~Current Version:1.2.2~`
 
 GP - Warranty Registration 🔥‍
 =========================
